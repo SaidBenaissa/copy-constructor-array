@@ -9,11 +9,28 @@ using namespace std;
 
 class IntegerArray {
 public:
-    explicit IntegerArray(int size) {
+    IntegerArray(int size) {
         m_array = new int[m_size];
         this->m_size = size;
         cout << "Constructor called" << endl;
     }
+
+    // copy constructor How to fix it dangling error? -
+    // Make our own copy constructor! By not depending on the default copy constructor,
+    // a newly copied object can have its own memory space and does not
+    // interfere with the object from which it is copied.
+
+    IntegerArray(IntegerArray &array){
+        m_array = new int[array.m_size];
+        m_size = array.m_size;
+
+        for(int i = 0; i < m_size; i++){
+            m_array[i] = array.m_array[i];
+        }
+        cout << "Copy constructor called" << endl;
+
+    }
+
 
     ~IntegerArray() {
         delete[] m_array;
@@ -46,7 +63,7 @@ int main() {
 
         // first destructor is called here
     }
-    cout << "array.m_array[0] = " << array.m_array[0] << endl; // dangling pointer,  // When array goes out of scope, destructor is called (deallocates array), array2.pArray now a dangling pointer.
+    cout << "array.m_array[0] = " << array.m_array[0] << endl; // error dangling pointer,  // When array goes out of scope, destructor is called (deallocates array), array2.pArray now a dangling pointer.
     cout << "array.m_array[1] = " << array.m_array[1] << endl; //     when array2 goes out of scope (main()), its destructor tries to delete the already-deleted array.
 
     return 0; // second destructor is called here
